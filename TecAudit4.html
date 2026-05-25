@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check List Technical Audit — ver. 6.0</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --navy: #0a1628;
+    --blue: #1a3a6b;
+    --accent: #2563eb;
+    --accent-light: #dbeafe;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --orange: #d97706;
+    --orange-light: #fef3c7;
+    --grey: #6b7280;
+    --grey-light: #f3f4f6;
+    --border: #e5e7eb;
+    --text: #111827;
+    --text-muted: #6b7280;
+    --white: #ffffff;
+    --shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.08);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: #f8fafc;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* HEADER */
+  .app-header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,.3);
+    position: static; 
+  }
+  .header-top {
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    flex-wrap: wrap; 
+    gap: 12px;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-icon {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .header-title { font-size: 16px; font-weight: 700; letter-spacing: -.2px; }
+  .header-sub { font-size: 11px; color: rgba(255,255,255,.5); font-family: 'IBM Plex Mono', monospace; }
+  
+  .header-stats {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap; 
+  }
+  .stat-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,.08);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .stat-pill .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-green { background: #22c55e; }
+  .dot-red { background: #ef4444; }
+  .dot-orange { background: #f59e0b; }
+  .dot-grey { background: #9ca3af; }
+  .dot-blue { background: #60a5fa; }
+  .progress-bar-wrap {
+    height: 3px;
+    background: rgba(255,255,255,.1);
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #22c55e);
+    transition: width .4s ease;
+    width: 0%;
+  }
+
+  /* SITO HEADER FORM */
+  .sito-card {
+    background: var(--blue);
+    padding: 16px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .sito-field { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+  .sito-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    color: rgba(255,255,255,.55);
+  }
+  .sito-input {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 6px;
+    color: var(--white);
+    padding: 6px 10px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .2s;
+    min-width: 140px;
+  }
+  .sito-input:focus { border-color: rgba(255,255,255,.6); background: rgba(255,255,255,.18); }
+  .sito-input::placeholder { color: rgba(255,255,255,.35); }
+  input[type=date].sito-input { color-scheme: dark; }
+
+  /* LAYOUT */
+  .main { max-width: 960px; margin: 0 auto; padding: 24px 16px 32px; }
+
+  /* ISTRUZIONI BANNER */
+  .istruzioni {
+    background: var(--accent-light);
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-size: 12.5px;
+    color: #1e3a8a;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .istr-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .istr-body { line-height: 1.6; }
+
+  /* AREA SECTION */
+  .area-section { margin-bottom: 8px; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); }
+  .area-header {
+    background: var(--blue);
+    color: var(--white);
+    padding: 10px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+    transition: background .15s;
+  }
+  .area-header:hover { background: #234080; }
+  .area-name { font-weight: 600; font-size: 13px; letter-spacing: -.1px; }
+  .area-meta { display: flex; align-items: center; gap: 10px; }
+  .area-count {
+    font-size: 11px;
+    background: rgba(255,255,255,.15);
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .area-chevron { font-size: 14px; transition: transform .25s; }
+  .area-chevron.open { transform: rotate(90deg); }
+  .area-questions { background: var(--white); }
+  .area-questions.collapsed { display: none; }
+
+  /* QUESTION ROW */
+  .q-row {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px;
+    transition: background .15s;
+  }
+  .q-row:last-child { border-bottom: none; }
+  .q-row:hover { background: #fafbfc; }
+  .q-top {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .q-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--grey-light);
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: var(--grey);
+    flex-shrink: 0;
+    margin-top: 2px;
+    min-width: 28px;
+    text-align: center;
+  }
+  .q-text {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text);
+    white-space: pre-line;
+  }
+  .q-check-badge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 3px 10px;
+    margin-top: 1px;
+    border: 1px solid transparent;
+  }
+  .badge-ok { background: var(--green-light); color: var(--green); border-color: #86efac; }
+  .badge-err { background: var(--red-light); color: var(--red); border-color: #fca5a5; }
+  .badge-none { background: var(--grey-light); color: var(--grey); border-color: var(--border); }
+
+  /* ESITO BUTTONS */
+  .esito-group {
+    margin-top: 10px;
+    margin-left: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .esito-btn {
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    background: var(--white);
+    color: var(--text-muted);
+    transition: all .15s;
+    font-family: 'IBM Plex Sans', sans-serif;
+    outline: none;
+  }
+  .esito-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .esito-btn.active-conforme { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .esito-btn.active-nonconforme { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .esito-btn.active-parziale { background: var(--orange-light); border-color: var(--orange); color: var(--orange); }
+  .esito-btn.active-na { background: var(--grey-light); border-color: #d1d5db; color: var(--grey); }
+  .esito-btn.active-nv { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+  /* DETAIL PANEL */
+  .detail-panel {
+    margin-top: 10px;
+    margin-left: 40px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    display: none;
+  }
+  .detail-panel.visible { display: block; }
+  .detail-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; }
+  .detail-row:last-child { margin-bottom: 0; }
+  .detail-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .detail-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--text-muted);
+  }
+  .req-star { color: var(--red); }
+
+  /* PRIORITÀ */
+  .priorita-group { display: flex; gap: 6px; }
+  .prio-btn {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: var(--white);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'IBM Plex Mono', monospace;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .prio-btn:hover { border-color: var(--accent); }
+  .prio-btn.active-1 { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .prio-btn.active-2 { background: var(--orange-light); border-color: var(--orange); color: var(--orange); }
+  .prio-btn.active-3 { background: #fef9c3; border-color: #ca8a04; color: #ca8a04; }
+
+  /* CdR CHECKBOXES */
+  .cdr-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cdr-label {
+    display: flex; align-items: center; gap: 5px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all .15s;
+    background: var(--white);
+    user-select: none;
+  }
+  .cdr-label:hover { border-color: var(--accent); color: var(--accent); }
+  .cdr-label.checked { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .cdr-label.checked::before { content: '✓ '; font-weight: 700; }
+
+  /* FOTO E ALLEGATI */
+  .btn-photo {
+    background: var(--grey-light); color: var(--text); border: 1px solid var(--border);
+    font-size: 11px; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px; font-weight: 600;
+    width: fit-content; transition: background .15s;
+  }
+  .btn-photo:hover { background: #e5e7eb; }
+  .photo-preview-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .photo-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); }
+
+  /* TEXTAREA */
+  .detail-textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+    transition: border-color .15s;
+    background: var(--white);
+  }
+  .detail-textarea:focus { border-color: var(--accent); }
+
+  /* TOOLBARS & BUTTONS */
+  .top-toolbar {
+    background: var(--white);
+    padding: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    justify-content: center;
+  }
+  
+  .toolbar {
+    background: var(--navy);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -2px 10px rgba(0,0,0,.2);
+    margin-top: 32px;
+    position: static; 
+    max-width: none;
+  }
+  .toolbar-status {
+    font-size: 12px;
+    color: rgba(255,255,255,.6);
+  }
+  .toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  
+  .btn {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-ghost { background: rgba(255,255,255,.1); color: var(--white); }
+  .btn-ghost:hover { background: rgba(255,255,255,.18); }
+  .top-toolbar .btn-ghost { background: var(--grey-light); color: var(--text); }
+  .top-toolbar .btn-ghost:hover { background: #e5e7eb; }
+  
+  .btn-primary { background: var(--accent); color: var(--white); }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-success { background: var(--green); color: var(--white); }
+  .btn-success:hover { background: #15803d; }
+  .btn-purple { background: #9333ea; color: var(--white); }
+  .btn-purple:hover { background: #7e22ce; }
+  .btn-danger { background: var(--red); color: var(--white); }
+  .btn-danger:hover { background: #b91c1c; }
+
+  /* SUMMARY TABLE & GLOBAL PHOTOS */
+  .summary-section {
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  
+  .summary-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .summary-title-left {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .summary-title-right {
+    font-family: 'IBM Plex Mono', monospace;
+    background: rgba(0,0,0,0.04);
+    padding: 4px 10px;
+    border-radius: 6px;
+    color: var(--navy);
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  .summary-item {
+    text-align: center;
+    padding: 12px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .summary-num {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .summary-lbl { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+  .sum-c { background: var(--green-light); border-color: #86efac; }
+  .sum-c .summary-num { color: var(--green); }
+  .sum-c .summary-lbl { color: #166534; }
+  .sum-nc { background: var(--red-light); border-color: #fca5a5; }
+  .sum-nc .summary-num { color: var(--red); }
+  .sum-nc .summary-lbl { color: #7f1d1d; }
+  .sum-p { background: var(--orange-light); border-color: #fcd34d; }
+  .sum-p .summary-num { color: var(--orange); }
+  .sum-p .summary-lbl { color: #78350f; }
+  .sum-na { background: var(--grey-light); border-color: #d1d5db; }
+  .sum-na .summary-num { color: var(--grey); }
+  .sum-na .summary-lbl { color: #374151; }
+  .sum-nv { background: var(--accent-light); border-color: #93c5fd; }
+  .sum-nv .summary-num { color: var(--accent); }
+  .sum-nv .summary-lbl { color: #1e3a8a; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); z-index: 1000;
+    display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-content {
+    background: var(--white); padding: 24px; border-radius: 12px;
+    max-width: 700px; width: 90%; max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--navy); }
+  .modal-body {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    background: var(--grey-light); padding: 16px; border-radius: 8px;
+    border: 1px solid var(--border); white-space: pre-wrap;
+    margin-bottom: 20px; user-select: all; line-height: 1.5;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .header-top { flex-direction: column; align-items: flex-start; padding: 12px 16px; }
+    .header-stats { gap: 8px; margin-top: 8px; }
+    .stat-pill { padding: 4px 8px; font-size: 11px; }
+    
+    .sito-card { flex-direction: column; align-items: stretch; padding: 16px; }
+    .sito-input { width: 100%; min-width: 100%; }
+    
+    .q-top { flex-direction: column; }
+    .q-check-badge { align-self: flex-start; margin-top: 8px; }
+    
+    .esito-group, .detail-panel { margin-left: 0; }
+    
+    .summary-title { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .summary-item:last-child { grid-column: span 2; }
+    
+    .toolbar, .top-toolbar { flex-direction: column; gap: 12px; align-items: stretch; text-align: center; }
+    .toolbar-actions { justify-content: center; }
+  }
+
+  /* PRINT STYLES */
+  @media print {
+    .app-header { position: relative; }
+    .toolbar, .top-toolbar, .istruzioni, .btn-photo, .modal-overlay { display: none !important; }
+    .area-questions.collapsed { display: block !important; }
+    .esito-group, .detail-panel { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .photo-preview-container { display: flex !important; margin-top: 10px; }
+    .photo-thumb { width: 150px; height: auto; max-height: 200px; page-break-inside: avoid; border: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="header-top">
+    <div class="header-brand">
+      <div class="header-icon">🛡️</div>
+      <div>
+        <div class="header-title">Check List Technical Audit</div>
+        <div class="header-sub">AL_9I045 — ver. 6.0 del 16/02/2026</div>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-pill"><span class="dot dot-green"></span><span id="cnt-c">0</span> Conformi</div>
+      <div class="stat-pill"><span class="dot dot-red"></span><span id="cnt-nc">0</span> Non conf.</div>
+      <div class="stat-pill"><span class="dot dot-orange"></span><span id="cnt-p">0</span> Parziali</div>
+      <div class="stat-pill"><span class="dot dot-grey"></span><span id="cnt-na">0</span> N/A</div>
+      <div class="stat-pill"><span class="dot dot-blue"></span><span id="cnt-nv">0</span> N/V</div>
+    </div>
+  </div>
+  <div class="sito-card">
+    <div class="sito-field">
+      <div class="sito-label">Codice Stabile *</div>
+      <input class="sito-input" id="f-codice" type="text" placeholder="es. 3160" maxlength="10" oninput="updateSitoHeader()">
+    </div>
+    <div class="sito-field">
+      <div class="sito-label">Data Sopralluogo *</div>
+      <input class="sito-input" id="f-data" type="date" oninput="updateSitoHeader()">
+    </div>
+    <div class="sito-field">
+      <div class="sito-label">Nome Verificatore</div>
+      <input class="sito-input" id="f-verificatore" type="text" placeholder="Nome e Cognome">
+    </div>
+    <div class="sito-field">
+      <div class="sito-label">Unità Organizzative Presenti</div>
+      <input class="sito-input" id="f-unita" type="text" placeholder="es. UP, CD, Filiale…">
+    </div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+<div class="main" id="main-content">
+
+  <div class="istruzioni">
+    <div class="istr-icon">ℹ️</div>
+    <div class="istr-body">
+      <strong>Come compilare:</strong> Inserire il Codice Stabile, quindi selezionare l'esito per ogni quesito.
+      Se l'esito è <strong>NON CONFORME</strong> o <strong>CONFORMITÀ PARZIALE</strong> occorre obbligatoriamente indicare Priorità, CdR e Evidenza oggettiva.
+      Se è <strong>NON VERIFICATO</strong> occorre indicare CdR e Evidenza. Con <strong>CONFORME</strong> o <strong>N/A</strong> non è necessario aggiungere ulteriori informazioni.
+      Il badge per riga mostra in tempo reale se la compilazione è corretta.
+      <em>(Fai doppio clic sulle priorità per leggere le descrizioni)</em>
+    </div>
+  </div>
+
+  <div class="summary-section">
+    <div class="summary-title">
+      <div class="summary-title-left">📊 Riepilogo Esiti</div>
+      <div class="summary-title-right">Compilati <span id="tot-compilati">0</span> / <span id="tot-quesiti">89</span></div>
+    </div>
+    <div class="summary-grid">
+      <div class="summary-item sum-c"><div class="summary-num" id="sum-c">0</div><div class="summary-lbl">Conformi</div></div>
+      <div class="summary-item sum-nc"><div class="summary-num" id="sum-nc">0</div><div class="summary-lbl">Non conformi</div></div>
+      <div class="summary-item sum-p"><div class="summary-num" id="sum-p">0</div><div class="summary-lbl">Parz. conformi</div></div>
+      <div class="summary-item sum-na"><div class="summary-num" id="sum-na">0</div><div class="summary-lbl">Non applicabili</div></div>
+      <div class="summary-item sum-nv"><div class="summary-num" id="sum-nv">0</div><div class="summary-lbl">Non verificati</div></div>
+    </div>
+  </div>
+
+  <div class="summary-section" id="global-photos-section" style="display: none; margin-bottom: 24px;">
+    <div class="summary-title">
+      <div class="summary-title-left">📷 Foto Generali Audit</div>
+    </div>
+    <div class="photo-preview-container" id="global-photos-container"></div>
+  </div>
+
+  <div class="top-toolbar">
+    <button class="btn btn-ghost" onclick="toggleAllAreas()">⊞ Espandi/Comprimi tutto</button>
+    <button class="btn btn-ghost" onclick="document.getElementById('global-photo-upload').click()">📷 Inserisci foto</button>
+    <button class="btn btn-ghost" onclick="window.print()">🖨️ Stampa</button>
+    
+    <button class="btn btn-primary" onclick="saveLocal()">💾 Salva in locale</button>
+    <button class="btn btn-success" onclick="openArchive()">📂 Apri Archivio</button>
+    
+    <button class="btn btn-ghost" onclick="exportJSON()">⬇ JSON</button>
+    <button class="btn btn-ghost" onclick="triggerImportJSON()">⬆ JSON</button>
+    <button class="btn btn-ghost" onclick="exportCSV()">⬇ CSV</button>
+    <button class="btn btn-purple" onclick="generateAIPrompt()">✨ Genera Prompt AI</button>
+    <button class="btn btn-danger" onclick="resetAll()">🫯 Azzera</button>
+    <input type="file" id="global-photo-upload" accept="image/*" multiple style="display:none" onchange="handleGlobalPhotoUpload(this)">
+    <input type="file" id="json-import-upload" accept=".json" style="display:none" onchange="importJSON(this)">
+  </div>
+
+  <div id="questions-container"></div>
+
+</div>
+
+<div class="toolbar" id="footer-toolbar">
+  <div class="toolbar-status">
+    <span id="tb-status">Selezionare il Codice Stabile per iniziare</span>
+  </div>
+  <div class="toolbar-actions">
+    <button class="btn btn-ghost" onclick="toggleAllAreas()">⊞ Espandi/Comprimi tutto</button>
+    <button class="btn btn-ghost" onclick="document.getElementById('global-photo-upload').click()">📷 Inserisci foto</button>
+    <button class="btn btn-ghost" onclick="window.print()">🖨️ Stampa</button>
+    
+    <button class="btn btn-primary" onclick="saveLocal()">💾 Salva in locale</button>
+    <button class="btn btn-success" onclick="openArchive()">📂 Apri Archivio</button>
+    
+    <button class="btn btn-ghost" onclick="exportJSON()">⬇ JSON</button>
+    <button class="btn btn-ghost" onclick="triggerImportJSON()">⬆ JSON</button>
+    <button class="btn btn-ghost" onclick="exportCSV()">⬇ CSV</button>
+    <button class="btn btn-purple" onclick="generateAIPrompt()">✨ Genera Prompt AI</button>
+    <button class="btn btn-danger" onclick="resetAll()">🫯 Azzera</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="custom-modal">
+  <div class="modal-content">
+    <div class="modal-title" id="modal-title">Titolo Modal</div>
+    <div class="modal-body" id="modal-text"></div>
+    <div class="modal-actions" id="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()" style="color:var(--text); background:var(--grey-light);">Chiudi</button>
+      <button class="btn btn-purple" id="btn-copy" onclick="copyToClipboard()">📋 Copia negli appunti</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {"id":"1","area":"Gestione Documentale / Antincendio","question":"Se presenti attività soggette a controllo obbligatorio del VVF, è stata richiesta/inviata/ottenuta la certificazione prevista dal DPR 151/11?"},
+  {"id":"2","area":"Gestione Documentale / Antincendio","question":"I dispositivi ed impianti di spegnimento (ad es. rete di idranti, sprinkler, etc) sono regolarmente manutenuti da ditta terza e regolarmente registrati su registro antincendio?"},
+  {"id":"3","area":"Gestione Documentale / Antincendio","question":"Laddove presenti, i dispositivi di segnalazione acustica e/o ottica, attivabili in modalità automatica o manuale in caso di emergenza, sono periodicamente verificati e manutenuti?"},
+  {"id":"4","area":"Antincendio e Gestione delle Emergenze","question":"È presente e completa la segnaletica che indichi le vie di fuga, le uscite di emergenza e i presidi antincendio (estintori, idranti, naspi)? In caso di rilievo specificare il tipo di segnaletica."},
+  {"id":"5","area":"Antincendio e Gestione delle Emergenze","question":"Laddove presente l'illuminazione delle vie di esodo, il sistema funziona correttamente e le luci sono tutte funzionanti?"},
+  {"id":"6","area":"Antincendio e Gestione delle Emergenze","question":"I dispositivi per l'apertura delle uscite di emergenza (maniglioni antipanico, etc.), se presenti, sono correttamente funzionanti?"},
+  {"id":"7","area":"Antincendio e Gestione delle Emergenze","question":"L'accesso agli estintori, idranti, naspi é sempre libero da ingombri che possano ostacolarne l'eventuale utilizzo?"},
+  {"id":"8","area":"Antincendio e Gestione delle Emergenze","question":"La posizione dei presidi antincendio nel sito è conforme a quanto riportato nella planimetria di emergenza?"},
+  {"id":"9","area":"Antincendio e Gestione delle Emergenze","question":"Gli estintori riportano tutti data di effettuazione dell'ultimo controllo conforme rispetto alla periodicità prevista e (dove presente) l'ago del manometro è sull'area verde dell'indicatore?"},
+  {"id":"10","area":"Antincendio e Gestione delle Emergenze","question":"Con riferimento a quanto indicato nel piano emergenze/MSGE è fisicamente presente un numero di incaricati alla gestione delle emergenze (anche quelli dedicati ai diversamente abili, se presenti) e di coordinatori della squadra emergenze conforme a quanto riportato nel PE/MSGE?"},
+  {"id":"11","area":"Antincendio e Gestione delle Emergenze","question":"Le uscite, le scale di emergenza ed i percorsi di esodo sono tutti segnalati e liberi da ingombri o altro che ne ostacolino l'accesso/il passaggio?"},
+  {"id":"12","area":"Antincendio e Gestione delle Emergenze","question":"Le scale di emergenza, o più in generale gli eventuali gradini presenti nelle vie di esodo, sono integri?"},
+  {"id":"13","area":"Antincendio e Gestione delle Emergenze","question":"Gli spazi esterni su cui si aprono le porte di emergenza (marciapiede, spazio protetto) sono sempre liberi ed accessibili?"},
+  {"id":"14","area":"Antincendio e Gestione delle Emergenze","question":"Le porte tagliafuoco, con o senza elettromagnete, si richiudono fino allo \"scatto\" della serratura?"},
+  {"id":"15","area":"Antincendio e Gestione delle Emergenze","question":"Le porte REI di compartimentazione, ad esclusione di quelle bloccate con elettromagnete, sono mantenute chiuse (ad es. sono evitati i comportamenti sbagliati tipo estintore per tenerle aperte etc)?"},
+  {"id":"16","area":"Antincendio e Gestione delle Emergenze","question":"Sono presenti e segnalati i presidi di primo soccorso (cassette, pacchetti di medicazione)?"},
+  {"id":"17","area":"Antincendio e Gestione delle Emergenze","question":"Con riferimento alla planimetria di emergenza, i punti di raccolta sono opportunamente segnalati e fruibili?"},
+  {"id":"18","area":"Accesso al Sito — Porte/Cancelli Motorizzati","question":"Nel caso in cui è previsto l'accesso dei veicoli nel sito, gli accessi sono differenziati tra pedonali e carrabili?"},
+  {"id":"19","area":"Accesso al Sito — Porte/Cancelli Motorizzati","question":"Cancelli/porte/sbarre motorizzati hanno i servomeccanismi funzionanti correttamente tali da evitare rischi meccanici/elettrici?"},
+  {"id":"20","area":"Ascensori / Montacarichi","question":"Sono presenti le avvertenze per l'uso e una targa recante le indicazioni obbligatorie (installatore e numero di fabbricazione; numero di matricola; portata in kg; numero massimo di persone; marcatura CE se installati dopo il 25/06/99)?"},
+  {"id":"21","area":"Ascensori / Montacarichi","question":"È presente all'interno della cabina dell'ascensore/montacarichi una targa con i dati relativi alla ditta che ne effettua la manutenzione? E' stata effettuata la corretta manutenzione (nelle modalità e periodicità previste)?"},
+  {"id":"22","area":"Ascensori / Montacarichi","question":"Il pulsante di allarme/arresto è in posizione ben visibile e libero da oggetti che ne nascondano la presenza?"},
+  {"id":"23","area":"Ascensori / Montacarichi","question":"Il dispositivo sonoro di emergenza è installato in un punto presidiato del luogo di lavoro, in modo da essere udibile?"},
+  {"id":"24","area":"Ascensori / Montacarichi","question":"La cabina è dotata di dispositivo di luce di emergenza correttamente funzionante?"},
+  {"id":"25","area":"Diversamente Abili","question":"Nel caso nell'edificio sia presente un lavoratore disabile o il locale sia aperto al pubblico, gli spazi antistanti e retrostanti le porte hanno dimensioni adeguate per la manovra di una sedia a ruote considerando il tipo di apertura?"},
+  {"id":"26","area":"Gestione Ambiente Lavoro","question":"Gli ambienti di lavoro si presentano complessivamente in ordine e in condizioni igieniche adeguate?"},
+  {"id":"27","area":"Gestione Ambiente Lavoro","question":"Se vengono utilizzati carrelli elevatori con uomo a bordo, sono segnalate a terra le aree di parcheggio e manovra, con contestuale presenza della segnaletica verticale prevista (cartello di attenzione \"carrelli in manovra\")?"},
+  {"id":"28","area":"Gestione Ambiente Lavoro","question":"All'interno dei reparti sono opportunamente segnalati e separati i percorsi pedonali da quelli dedicati al transito dei carrelli? In caso di rilievo specificare il tipo di segnaletica."},
+  {"id":"29","area":"Gestione Ambiente Lavoro","question":"Se vengono utilizzati carrelli elevatori/transpallet a trazione elettrica, i locali o le zone destinate alla ricarica degli accumulatori sono segnalati e conformi a quanto riportato nei documenti di sicurezza (DVR, PE, etc.)?"},
+  {"id":"30","area":"Gestione Ambiente Lavoro","question":"Se nel sito sono utilizzati carrelli pesanti spinti manualmente, carrelli elevatori/transpallet, sono installati sistemi di protezione (paracolpi) per evitare il danneggiamento di piastre radianti, impianti elettrici etc?"},
+  {"id":"31","area":"Gestione Ambiente Lavoro","question":"Il materiale facilmente infiammabile, contraddistinto da apposito pittogramma, è tenuto lontano da apparecchiature che emettono calore (fancoil, fotocopiatrici, pc, server, lampade da tavolo)?"},
+  {"id":"32","area":"Gestione Ambiente Lavoro","question":"Il materiale da archiviare viene adeguatamente riposto nelle attrezzature (scaffali e armadi) a disposizione, avoiding l'accumulo disordinato o non coerente con quanto previsto dalla normativa antincendio e dai documenti SSL (DVR, VRI, PA, PE/MSGE, etc.)?"},
+  {"id":"33","area":"Gestione Ambiente Lavoro","question":"Le scaffalature hanno una configurazione tali da scongiurarne il ribaltamento o il collasso? È presente la cartellonistica indicante la portata massima?\n(Armadi in legno o metallici integri: non devono essere ancorati. Scaffalature leggere dotate di crociera posteriore integre: NON devono essere ancorate. Scaffalature prive di crociera propria devono essere ancorate.)"},
+  {"id":"34","area":"Gestione Ambiente Lavoro","question":"E' presente ed in buono stato di conservazione la segnaletica di sicurezza (ad es. cartellonistica di divieto, obbligo etc)? In caso di rilievo specificare il tipo di segnaletica."},
+  {"id":"35","area":"Gestione Ambiente Lavoro","question":"I luoghi di lavoro sono liberi da attrezzature ed elementi d'arredo fuori uso e/o personali?\n(N.B. Lo smaltimento di materiali/arredi/attrezzature non più utilizzate è eseguito dalla funzione IMMOBILIARE solo per materiali derivanti da lavori.)"},
+  {"id":"36","area":"Gestione Ambiente Lavoro","question":"E' presente nei locali, affissa in modo ben visibile, la cartellonistica indicante il divieto di fumo e riportante las sanzioni amministrative cui vanno incontro i trasgressori? In caso di rilievo specificare il tipo di segnaletica."},
+  {"id":"37","area":"Gestione Ambiente Lavoro","question":"È evitato l'uso di prolunghe che possano provocare il rischio di inciampo o multi prese così come indicato nei documenti SSL (DVR/IOS)?"},
+  {"id":"38","area":"Gestione Ambiente Lavoro","question":"È evitato l'utilizzo di apparecchi elettrici non forniti o non autorizzati dall'azienda?"},
+  {"id":"39","area":"Illuminazione","question":"I corpi illuminanti sono tutti funzionanti?"},
+  {"id":"40","area":"Gestione Documentale / Impianti Elettrici","question":"Gli impianti elettrici hanno la dichiarazione di conformità ex D.Lgs. 37/08?"},
+  {"id":"41","area":"Gestione Documentale / Impianti Elettrici","question":"Gli impianti elettrici, di messa a terra e di protezione dalle scariche atmosferiche (se presente), sono regolarmente manutenuti da ditta terza e verificati periodicamente?"},
+  {"id":"42","area":"Impianti Elettrici","question":"I quadri elettrici sono integri e chiusi da portello?"},
+  {"id":"43","area":"Impianti Elettrici","question":"E' presente la segnaletica di sicurezza in prossimità del quadro elettrico che lo individua?"},
+  {"id":"44","area":"Impianti Elettrici","question":"Dall'analisi di quanto visivamente riscontrabile, i componenti dell'impianto elettrico risultano in buone condizioni (cassette di derivazione e canale chiuse, prese e apparecchi di comando non danneggiati, conduttori protetti, etc.)?"},
+  {"id":"45","area":"Gestione Documentale / Impianti Termici","question":"E' regolarmente effettuata la manutenzione degli impianti termici di sito?"},
+  {"id":"46","area":"Gestione Documentale / Impianti Termici","question":"E' presente la documentazione prevista dalla norma o altra documentazione che attesti la periodicità/frequenza degli interventi previsti per gli impianti di condizionamento del sito?"},
+  {"id":"47","area":"Gestione Documentale / Impianti Termici","question":"L'installazione delle tubazioni del gas metano di alimentazione dell'impianto di riscaldamento è conforme alla normativa UNI 7129:1:2015?"},
+  {"id":"48","area":"Impianti Riscaldamento / Raffrescamento","question":"La tubazione di trasporto del gas combustibile, dal punto di misura al locale tecnico (es. centrale termica), è rispondente ai requisiti previsti (protezione dagli urti, verniciatura con specifico colore in base al gas trasportato, valvola di arresto protetta dagli urti)?"},
+  {"id":"49","area":"Locali Tecnologici","question":"I locali tecnologici (centrali termiche, gruppi elettrogeni, locale impianto spegnimento, cabina di trasformazione etc) sono opportunamente segnalati?"},
+  {"id":"50","area":"Postazioni di Lavoro","question":"Le postazioni VDT sono organizzate in modo tale che (Allegato XXXIV D.Lgs 81/08):\n• lo schermo è posizionato di fronte all'operatore ad adeguata distanza, senza riflessi?\n• il piano di lavoro ha dimensioni adeguate per la corretta disposizione di monitor, tastiera, documenti?\n• Il sedile di lavoro è stabile, regolabile in altezza per schienale e seduta, di materiale facilmente pulibile?\n• l'ambiente di lavoro è di dimensioni adeguate e con adeguato comfort microclimatico e di illuminazione?"},
+  {"id":"51","area":"Strutture / Amianto","question":"I materiali contenenti amianto sono nelle opportune condizioni di conservazione (assenza di danneggiamenti, forature, abrasioni, taglio etc.)? Sono gestiti nel rispetto degli adempimenti previsti dalla procedura aziendale \"Gestione, controllo e manutenzione dei MCA negli edifici aziendali\"?"},
+  {"id":"52","area":"Strutture / Generale","question":"La pavimentazione è esente da avvallamenti e/o risalti che possano essere fonte di pericolo per il transito a piedi o con attrezzature di movimentazione-sollevamento (carrelli, transpallet, etc.)?"},
+  {"id":"53","area":"Strutture / Generale","question":"Le porte e pareti trasparenti sono opportunamente segnalate all'altezza degli occhi?"},
+  {"id":"54","area":"Strutture / Generale","question":"Le porte e le pareti trasparenti o traslucide, nel caso i lavoratori possano entrare in contatto con esse, sono costituite da materiali resistant agli urti (vetri stratificati, con pellicola o temperati)?"},
+  {"id":"55","area":"Strutture / Generale","question":"Pareti, solai o controsoffitti sono esenti da segni di dissesto (lesioni, distacco di intonaci, infiltrazioni etc.) che possano essere influenti sotto il profilo della sicurezza o dell'igiene?"},
+  {"id":"56","area":"Strutture / Generale","question":"I gradini sono dotati di bande antiscivolo?"},
+  {"id":"57","area":"Strutture / Generale","question":"I locali sono dotati di infissi che, ad analisi visiva, non presentano danneggiamenti (cerniere danneggiate, vetri lesionati o non stabili, maniglie di chiusura non funzionanti, etc.)?"},
+  {"id":"58","area":"Strutture / Generale","question":"Le finestre, i lucernai ed i dispositivi di ventilazione possono essere aperti, chiusi, regolati dai lavoratori in tutta sicurezza?"},
+  {"id":"59","area":"Strutture / Generale","question":"Ove presenti, variazioni di quota o dislivelli sulle vie di circolazione, che comportano rischio di inciampo o urto, sono adeguatamente segnalate?"},
+  {"id":"60","area":"Strutture / Generale","question":"Le operazioni di carico e scarico che prevedono l'utilizzo di mezzi dotati di sponda idraulica, vengono effettuate garantendo una adeguata base di appoggio?"},
+  {"id":"61","area":"Strutture / Generale","question":"Le banchine di carico e scarico sono coerenti con i requisiti previsti nei documenti SSL (DVR, linee guida)?"},
+  {"id":"62","area":"Strutture / Generale","question":"Negli edifici in cui le operazioni di carico e scarico avvengono in scarse condizioni di luminosità naturale e/o in orario notturno, l'area interessata è adeguatamente illuminata?"},
+  {"id":"63","area":"Strutture / Generale","question":"Dove si concretizza il rischio da caduta dall'alto ex D.Lgs. 81/08, è presente adeguata protezione?"},
+  {"id":"64","area":"Strutture / Generale","question":"Le rampe di scale fisse a gradini, delimitate da due pareti, sono munite di almeno un corrimano?"},
+  {"id":"65","area":"Strutture / Generale","question":"Le rampe esclusivamente carrabili e/o ad uso promiscuo (veicoli/pedoni) risultano conformi ai requisiti normativi (pendenza massima, eventuale presenza di grip a spina pesce, efficace sistema di drenaggio delle acque bianche, segnaletica orizzontale e verticale)?"},
+  {"id":"66","area":"Strutture / Generale","question":"Le rampe interne di raccordo sono opportunamente segnalate?"},
+  {"id":"67","area":"Strutture / Macchine Radiogene","question":"Le aree che ospitano le macchine radiogene per il controllo della corrispondenza sono opportunamente delimitate e dotate di idonea segnaletica? Sono rispettati gli adempimenti normativi come previsto dalla specifica Procedura \"Sorveglianza fisica della radioprotezione nell'utilizzo delle macchine radiogene Poste Italiane\"?"},
+  {"id":"68","area":"Strutture / Microclima","question":"Gli esiti delle misurazioni microclimatiche sugli ambienti di lavoro sono conformi ai requisiti di benessere?"},
+  {"id":"69","area":"Strutture / Radiazioni Ionizzanti","question":"I luoghi di lavoro con potenziale esposizione a gas radon (es. archivi, seminterrati) sono censiti e gestiti nel rispetto degli adempimenti normativi come previsto dalla specifica Procedura \"Gestione e Controllo dei luoghi di lavoro con esposizione a rischio Radon\"?"},
+  {"id":"70","area":"Strutture / Servizi Igienici e Spogliatoi","question":"I servizi igienici sono in idonee condizioni impiantistiche ed igieniche? (N.B.: ventilazione necessaria solo in caso di assenza di apertura finestrata.)"},
+  {"id":"71","area":"Strutture / Servizi Igienici e Spogliatoi","question":"Gli spogliatoi sono aerati, illuminati, riscaldati, muniti di sedili e armadietti per il vestiario?"},
+  {"id":"72","area":"Strutture / Utilizzo","question":"I locali sono utilizzati conformemente alla destinazione d'uso?"},
+  {"id":"73","area":"Strutture / Utilizzo","question":"Negli edifici con operazioni di carico e scarico nei piazzali, la viabilità pedonale e dei mezzi è regolamentata e segnalata?"},
+  {"id":"74","area":"Strutture / Utilizzo","question":"Le aree di stoccaggio di carrelli, cassette, materiali in transito, sono adeguatamente dimensionate, segnalate e gestite (ordine, pulizia, assenza di accumuli, etc)?"},
+  {"id":"75","area":"Gestione Documentale / Ambiente","question":"Gli impianti termici rientranti nel titolo I Parte V del D.Lgs.152/2006 sono stati autorizzati secondo le disposizioni del citato Decreto ed eventuali vincoli normativi locali?"},
+  {"id":"76","area":"Gestione Documentale / Ambiente","question":"Se presenti apparecchiature fisse di refrigerazione, condizionamento d'aria, pompe di calore nonché sistemi fissi di protezione antincendio contenenti gas fluorurati a effetto serra (es. HFC) rientranti nel Regolamento 573/2024, queste sono gestite secondo quanto stabilito dallo stesso Regolamento (delega scritta, registro di controllo, verifiche periodiche, Dichiarazione F-gas)?"},
+  {"id":"77","area":"Gestione Documentale / Ambiente","question":"Se sono ancora presenti apparecchiature e impianti che contengono come gas refrigerante sostanze lesive per la fascia d'ozono CFC-HCFC (es. R22) questi sono dotati del libretto d'impianto e sottoposti ai controlli periodici per la verifica della presenza di fughe?"},
+  {"id":"78","area":"Gestione Documentale / Ambiente","question":"Le attività di gestione (conduzione e manutenzione) e controllo degli impianti di depurazione/trattamento o vasca di decantazione (es. vasca IMHOFF) delle acque reflue sono regolarmente svolte e affidate a ditta esterna specializzata?"},
+  {"id":"79","area":"Gestione Documentale / Ambiente","question":"Gli scarichi idrici rispondono ai requisiti normativi fissati dal D.Lgs 152/2006 (es. scarico in pubblica fognatura con autorizzazione rilasciata dal Comune/Provincia, necessità di trattamento preliminare allo scarico)?\n(N.B. Quesito applicabile solo per verifiche condotte in siti industriali — CS e siti ricompresi nel perimetro ISO14001.)"},
+  {"id":"80","area":"Ambiente / Gestione Incidenti e Sversamenti","question":"Nel caso si siano verificati incidenti/sversamenti di oli, benzine o altre sostanze sono state attivate le procedure operative e amministrative descritte nell'art. 242 del D.Lgs 152/2006?"},
+  {"id":"81","area":"Ambiente / Gestione Rifiuti","question":"I rifiuti prodotti sono regolarmente gestiti nel rispetto degli adempimenti normativi come richiamati dalle Linee guida \"LG Gestione rifiuti\" (tracciabilità dei rifiuti, Registro carico/scarico, FIR, MUD, documentazione dati personali)?\nPer i rifiuti speciali pericolosi sono rispettati gli adempimenti previsti dal RENTRI (iscrizione Unità locale, tenuta digitale Registro c/s, invio dati al RENTRI)?"},
+  {"id":"82","area":"Ambiente / Gestione Rifiuti","question":"Le aree dedicate al deposito temporaneo dei rifiuti sono correttamente organizzate come previsto da normativa (rifiuti depositati nelle aree dedicate, organizzati per categorie omogenee, rispetto dei limiti temporali e volumetrici)?"},
+  {"id":"83","area":"Ambiente / Gestione Rifiuti","question":"E' gestita correttamente la classificazione/separazione dei rifiuti prodotti in sito (classificazione rifiuti urbani - rifiuti speciali, pericolosi-non pericolosi e separazione per codice CER)?"},
+  {"id":"84","area":"Ambiente / Gestione Rifiuti","question":"Punti di raccolta e i depositi temporanei sono gestiti come previsto dalla LG Gestione Rifiuti, con assenza di miscelazione dei CER e con raccolta ed avviamento alle operazioni di recupero e/o smaltimento con almeno periodicità minima indicata nella linea guida?"},
+  {"id":"85","area":"Ambiente / Gestione Rifiuti","question":"Il formulario di identificazione Rifiuti (FIR), quale documento di accompagnamento per il trasporto fino all'impianto di recupero/smaltimento autorizzato, è correttamente compilato in ogni sua parte, firmato e conservato in sito (prima e seconda copia) per tre anni?"},
+  {"id":"86","area":"Ambiente / Gestione Rifiuti","question":"Il Responsabile del sito ha ricevuto dal Dirigente Delegato di riferimento tutte le informazioni in merito ai contratti in essere per le attività di recupero/smaltimento dei rifiuti al fine di verificare la corretta applicazione e rispetto degli stessi da parte delle ditte terze incaricate?"},
+  {"id":"87","area":"Ambiente / Prodotti Chimici","question":"I prodotti chimici (Inchiostri, diluenti, additivi utilizzati dalle ditte di manutenzione) sono gestiti e conservati nel rispetto delle prescrizioni normative (idonei contenitori con etichettatura, riposti in armadi di sicurezza o in spazi dedicati, presenza di Schede di Sicurezza, etc.)? I prodotti delle ditte di igiene ambientale sono riposti in appositi spazi dedicati?"},
+  {"id":"88","area":"Ambiente / Radiazioni Ionizzanti","question":"Qualora precedentemente installati, sono stati rimossi i rilevatori di calore (impianto antincendio) all'americio 241 (elemento chimico metallico radioattivo) ed avviati a smaltimento secondo le dispositions legislative vigenti?"},
+  {"id":"89","area":"Ambiente / Serbatoi Interrati","question":"I serbatoi interrati destinati allo stoccaggio di liquidi combustibili con capacità uguale o superiore a 1m3 sono correttamente gestiti per quanto attiene la conduzione, risanamento, dismissione, bonifica e messa in sicurezza o rimozione e smaltimento?"}
+];
+
+const CDR_LIST = ['MP','PCL','MIPA','BP','SC e loro dipendenze','DTO','PMD'];
+const state = {
+  globalPhotos: []
+}; 
+
+// --- GESTIONE FOTO GENERALI ---
+function handleGlobalPhotoUpload(input) {
+  if (!input.files || input.files.length === 0) return;
+  if (!state.globalPhotos) state.globalPhotos = [];
+
+  const section = document.getElementById('global-photos-section');
+  const container = document.getElementById('global-photos-container');
+  section.style.display = 'block';
+
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+        } else {
+          if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+        }
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        state.globalPhotos.push(dataUrl);
+
+        const thumb = document.createElement('img');
+        thumb.src = dataUrl;
+        thumb.className = 'photo-thumb';
+        container.appendChild(thumb);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+// --- AZZERA TUTTO CON CONFERMA ---
+function resetAll() {
+  if (!confirm("Sei sicuro di voler azzerare tutti i dati, le selezioni e le foto a schermo? L'operazione non è reversibile.")) return;
+  resetAllSilently();
+  updateStats();
+}
+
+// --- AZZERA TUTTO SILENZIOSO (PER CARICAMENTO ARCHIVIO) ---
+function resetAllSilently() {
+  document.getElementById('f-codice').value = '';
+  document.getElementById('f-data').value = '';
+  document.getElementById('f-verificatore').value = '';
+  document.getElementById('f-unita').value = '';
+  updateSitoHeader();
+
+  state.globalPhotos = [];
+  document.getElementById('global-photos-container').innerHTML = '';
+  document.getElementById('global-photos-section').style.display = 'none';
+
+  QUESTIONS.forEach(q => {
+    delete state[q.id];
+
+    const qRow = document.getElementById('qrow-'+q.id);
+    if (qRow) {
+      qRow.querySelectorAll('.esito-btn').forEach(b => b.className = 'esito-btn');
+      qRow.querySelectorAll('.prio-btn').forEach(b => b.className = 'prio-btn');
+      qRow.querySelectorAll('.cdr-label').forEach(l => l.classList.remove('checked'));
+    }
+
+    const evArea = document.getElementById('ev-'+q.id);
+    if (evArea) evArea.value = '';
+    const trArea = document.getElementById('tr-'+q.id);
+    if (trArea) trArea.value = '';
+
+    const photoContainer = document.getElementById('photos-container-'+q.id);
+    if (photoContainer) photoContainer.innerHTML = '';
+
+    updatePanel(q.id);
+    validate(q.id);
+  });
+}
+
+// --- BUILD UI ---
+function buildUI() {
+  const container = document.getElementById('questions-container');
+  const areas = [];
+  const areaMap = {};
+  QUESTIONS.forEach(q => {
+    if (!areaMap[q.area]) { areaMap[q.area] = []; areas.push(q.area); }
+    areaMap[q.area].push(q);
+  });
+
+  areas.forEach((area, aIdx) => {
+    const qs = areaMap[area];
+    const section = document.createElement('div');
+    section.className = 'area-section';
+    section.innerHTML = `
+      <div class="area-header" onclick="toggleArea(${aIdx})">
+        <div class="area-name">📁 ${area}</div>
+        <div class="area-meta">
+          <span class="area-count">${qs.length} quesit${qs.length===1?'o':'i'}</span>
+          <span class="area-chevron open" id="chevron-${aIdx}">▶</span>
+        </div>
+      </div>
+      <div class="area-questions" id="area-qs-${aIdx}">
+        ${qs.map(q => buildQuestion(q)).join('')}
+      </div>`;
+    container.appendChild(section);
+  });
+}
+
+function buildQuestion(q) {
+  const cdrCheckboxes = CDR_LIST.map(c =>
+    `<div class="cdr-label" id="cdr-lbl-${q.id}-${c}" onclick="toggleCdr('${q.id}','${c}',this)">
+      ${c}
+    </div>`
+  ).join('');
+
+  return `
+  <div class="q-row" id="qrow-${q.id}">
+    <div class="q-top">
+      <span class="q-id">${q.id}</span>
+      <span class="q-text">${escHtml(q.question)}</span>
+      <span class="q-check-badge badge-none" id="badge-${q.id}">— —</span>
+    </div>
+    <div class="esito-group">
+      <button class="esito-btn" onclick="setEsito('${q.id}','C',this)">✓ CONFORME</button>
+      <button class="esito-btn" onclick="setEsito('${q.id}','NC',this)">✗ NON CONFORME</button>
+      <button class="esito-btn" onclick="setEsito('${q.id}','P',this)">≈ CONFORMITÀ PARZIALE</button>
+      <button class="esito-btn" onclick="setEsito('${q.id}','NA',this)">○ NON APPLICABILE</button>
+      <button class="esito-btn" onclick="setEsito('${q.id}','NV',this)">? NON VERIFICATO</button>
+    </div>
+    <div class="detail-panel" id="panel-${q.id}">
+      <div class="detail-row" id="prio-row-${q.id}" style="display:none">
+        <div class="detail-field">
+          <div class="detail-label">Livello Priorità <span class="req-star">*</span></div>
+          <div class="priorita-group">
+            <button class="prio-btn" onclick="setPrio('${q.id}','1',this)" ondblclick="showPrioInfo(1)">1</button>
+            <button class="prio-btn" onclick="setPrio('${q.id}','2',this)" ondblclick="showPrioInfo(2)">2</button>
+            <button class="prio-btn" onclick="setPrio('${q.id}','3',this)" ondblclick="showPrioInfo(3)">3</button>
+          </div>
+        </div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-field" style="flex:1">
+          <div class="detail-label">CdR Datore di Lavoro <span class="req-star">*</span></div>
+          <div class="cdr-group">${cdrCheckboxes}</div>
+        </div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-field" style="flex:1">
+          <div class="detail-label">Evidenza oggettiva / Note <span class="req-star" id="evnote-star-${q.id}">*</span></div>
+          <textarea class="detail-textarea" id="ev-${q.id}" placeholder="Descrivere l'evidenza oggettiva osservata…" oninput="validate('${q.id}')"></textarea>
+        </div>
+        <div class="detail-field" style="flex:1">
+          <div class="detail-label">Eventuale trattamento immediato</div>
+          <textarea class="detail-textarea" id="tr-${q.id}" placeholder="Azioni correttive immediate intraprese…"></textarea>
+        </div>
+      </div>
+      <div class="detail-row" style="margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div class="detail-field" style="flex:1">
+          <label class="btn-photo">
+            📷 Inserisci foto
+            <input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotoUpload(this, '${q.id}')">
+          </label>
+          <div class="photo-preview-container" id="photos-container-${q.id}"></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// --- FOTO COMPRESSIONE E GESTIONE SINGOLI QUESITI ---
+function handlePhotoUpload(input, id) {
+  if (!input.files || input.files.length === 0) return;
+  if (!state[id]) state[id] = {};
+  if (!state[id].photos) state[id].photos = [];
+
+  const container = document.getElementById('photos-container-' + id);
+
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+        } else {
+          if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+        }
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        state[id].photos.push(dataUrl);
+
+        const thumb = document.createElement('img');
+        thumb.src = dataUrl;
+        thumb.className = 'photo-thumb';
+        container.appendChild(thumb);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+// --- AREA TOGGLE ---
+let allOpen = true;
+function toggleArea(idx) {
+  const qs = document.getElementById('area-qs-'+idx);
+  const ch = document.getElementById('chevron-'+idx);
+  qs.classList.toggle('collapsed');
+  ch.classList.toggle('open');
+}
+function toggleAllAreas() {
+  const sections = document.querySelectorAll('.area-questions');
+  const chevrons = document.querySelectorAll('.area-chevron');
+  allOpen = !allOpen;
+  sections.forEach(s => { if(allOpen) s.classList.remove('collapsed'); else s.classList.add('collapsed'); });
+  chevrons.forEach(c => { if(allOpen) c.classList.add('open'); else c.classList.remove('remove'); });
+}
+
+// --- ESITO ---
+function setEsito(id, val, btn) {
+  if (!state[id]) state[id] = {};
+  if (state[id].esito === val) {
+    state[id].esito = null;
+    btn.className = 'esito-btn';
+    updatePanel(id);
+    validate(id);
+    updateStats();
+    return;
+  }
+  state[id].esito = val;
+  btn.closest('.esito-group').querySelectorAll('.esito-btn').forEach(b => b.className = 'esito-btn');
+  const cls = {C:'active-conforme',NC:'active-nonconforme',P:'active-parziale',NA:'active-na',NV:'active-nv'}[val];
+  btn.classList.add(cls);
+  updatePanel(id);
+  validate(id);
+  updateStats();
+}
+
+function updatePanel(id) {
+  const esito = state[id] && state[id].esito;
+  const panel = document.getElementById('panel-'+id);
+  const prioRow = document.getElementById('prio-row-'+id);
+  const star = document.getElementById('evnote-star-'+id);
+  if (esito === 'C' || esito === 'NA' || !esito) {
+    panel.classList.remove('visible');
+  } else {
+    panel.classList.add('visible');
+    prioRow.style.display = (esito === 'NC' || esito === 'P') ? 'flex' : 'none';
+    star.style.display = (esito === 'NC' || esito === 'P' || esito === 'NV') ? 'inline' : 'none';
+  }
+}
+
+// --- PRIORITÀ ---
+function setPrio(id, val, btn) {
+  if (!state[id]) state[id] = {};
+  if (state[id].prio === val) { state[id].prio = null; btn.className='prio-btn'; validate(id); return; }
+  state[id].prio = val;
+  btn.closest('.priorita-group').querySelectorAll('.prio-btn').forEach(b => b.className='prio-btn');
+  btn.classList.add('active-'+val);
+  validate(id);
+}
+
+// --- CdR ---
+function toggleCdr(id, cdr, lbl) {
+  if (!state[id]) state[id] = {};
+  if (!state[id].cdrs) state[id].cdrs = new Set();
+  if (state[id].cdrs.has(cdr)) { state[id].cdrs.delete(cdr); lbl.classList.remove('checked'); }
+  else { state[id].cdrs.add(cdr); lbl.classList.add('checked'); }
+  validate(id);
+}
+
+// --- VALIDATE ---
+function validate(id) {
+  const s = state[id] || {};
+  const esito = s.esito;
+  const badge = document.getElementById('badge-'+id);
+  if (!esito) {
+    badge.className = 'q-check-badge badge-none'; badge.textContent = '— —'; return;
+  }
+  let ok = false;
+  if (esito === 'C' || esito === 'NA') {
+    ok = true;
+  } else if (esito === 'NC' || esito === 'P') {
+    const hasPrio = !!s.prio;
+    const hasCdr = s.cdrs && s.cdrs.size > 0;
+    const hasEv = (document.getElementById('ev-'+id) || {}).value && document.getElementById('ev-'+id).value.trim().length > 0;
+    ok = hasPrio && hasCdr && hasEv;
+  } else if (esito === 'NV') {
+    const hasCdr = s.cdrs && s.cdrs.size > 0;
+    const hasEv = (document.getElementById('ev-'+id) || {}).value && document.getElementById('ev-'+id).value.trim().length > 0;
+    ok = hasCdr && hasEv;
+  }
+  badge.className = 'q-check-badge ' + (ok ? 'badge-ok' : 'badge-err');
+  badge.textContent = ok ? '✓ Corretto' : '⚠ Incompleto';
+}
+
+// --- STATS ---
+function updateStats() {
+  const counts = {C:0, NC:0, P:0, NA:0, NV:0};
+  let compiled = 0;
+  const totalQ = QUESTIONS.length; 
+  
+  QUESTIONS.forEach(q => {
+    const e = (state[q.id] || {}).esito;
+    if (e) { counts[e]++; compiled++; }
+  });
+  
+  document.getElementById('cnt-c').textContent = counts.C;
+  document.getElementById('cnt-nc').textContent = counts.NC;
+  document.getElementById('cnt-p').textContent = counts.P;
+  document.getElementById('cnt-na').textContent = counts.NA;
+  document.getElementById('cnt-nv').textContent = counts.NV;
+  document.getElementById('sum-c').textContent = counts.C;
+  document.getElementById('sum-nc').textContent = counts.NC;
+  document.getElementById('sum-p').textContent = counts.P;
+  document.getElementById('sum-na').textContent = counts.NA;
+  document.getElementById('sum-nv').textContent = counts.NV;
+  document.getElementById('tot-compilati').textContent = compiled;
+  document.getElementById('tot-quesiti').textContent = totalQ; 
+  document.getElementById('progress-fill').style.width = (compiled/totalQ*100).toFixed(1)+'%';
+  
+  const nc = counts.NC + counts.P;
+  const tbStatus = document.getElementById('tb-status');
+  tbStatus.textContent = `Compilati: ${compiled}/${totalQ} | Non conformità: ${nc} | Progresso: ${(compiled/totalQ*100).toFixed(0)}%`;
+}
+
+// --- SITO HEADER ---
+function updateSitoHeader() {
+  const cod = document.getElementById('f-codice').value.trim();
+  document.title = cod ? `Technical Audit — Stabile ${cod}` : 'Check List Technical Audit';
+}
+
+// --- MODAL SYSTEM ---
+function showModalInfo(title, text, showCopy = false) {
+  document.getElementById('modal-title').textContent = title;
+  const modalText = document.getElementById('modal-text');
+  modalText.textContent = text;
+  modalText.style.whiteSpace = 'pre-wrap'; 
+  document.getElementById('btn-copy').style.display = showCopy ? 'inline-flex' : 'none';
+  document.getElementById('custom-modal').classList.add('active');
+}
+function closeModal() {
+  document.getElementById('custom-modal').classList.remove('active');
+}
+function copyToClipboard() {
+  const text = document.getElementById('modal-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Testo copiato negli appunti!");
+  }).catch(err => {
+    alert("Errore durante la copia. Puoi selezionare il testo e copiare manualmente.");
+  });
+}
+function showPrioInfo(level) {
+  let title = `Dettaglio Priorità ${level}`;
+  let text = '';
+  if(level == 1) text = 'P1 — rischi per l’incolumità o interruzione attività (strutturali, vie di fuga, antincendio, elettrici, MCA, Radon…)';
+  if(level == 2) text = 'P2 — condizioni non ottimali per lo svolgimento del lavoro (microclima, illuminotecnica, postazioni VDT…)';
+  if(level == 3) text = 'P3 — gli altri casi';
+  showModalInfo(title, text, false);
+}
+
+// --- AI PROMPT GENERATION ---
+function generateAIPrompt() {
+  const cod = document.getElementById('f-codice').value.trim() || 'N/D';
+  const data = document.getElementById('f-data').value || 'N/D';
+  const ver = document.getElementById('f-verificatore').value.trim() || 'N/D';
+  const unita = document.getElementById('f-unita').value.trim() || 'N/D';
+  const totalQ = QUESTIONS.length; 
+
+  let c=0, nc=0, p=0, na=0, nv=0, compiled=0;
+  let listNC = '', listP = '', listNV = '';
+
+  QUESTIONS.forEach(q => {
+    const s = state[q.id];
+    if (s && s.esito) {
+      compiled++;
+      if (s.esito === 'C') c++;
+      if (s.esito === 'NC') nc++;
+      if (s.esito === 'P') p++;
+      if (s.esito === 'NA') na++;
+      if (s.esito === 'NV') nv++;
+
+      const ev = (document.getElementById('ev-'+q.id)||{}).value || '';
+      const cdrs = s.cdrs ? [...s.cdrs].join(', ') : '';
+      
+      const itemStr = `- Q${q.id} [Area: ${q.area}]: ${q.question}\n  Priorità: P${s.prio || 'N/D'} | CdR: ${cdrs || 'N/D'}\n  Evidenza: ${ev}\n\n`;
+
+      if (s.esito === 'NC') listNC += itemStr;
+      if (s.esito === 'P') listP += itemStr;
+      if (s.esito === 'NV') listNV += `- Q${q.id} [Area: ${q.area}]: ${q.question}\n  CdR: ${cdrs || 'N/D'}\n  Evidenza: ${ev}\n\n`;
+    }
+  });
+
+  if (!listNC) listNC = "Nessuna.\n";
+  if (!listP) listP = "Nessuna.\n";
+  if (!listNV) listNV = "Nessuno.\n";
+
+  const promptText = `Sei un esperto di sicurezza sul lavoro e ambiente (D.Lgs. 81/2008). Hai a disposizione i risultati di un Technical Audit interno e devi redigere una relazione tecnica discorsiva professionale in italiano.
+
+═══ DATI SOPRALLUOGO ═══
+Codice Stabile: ${cod}
+Data: ${data}
+Verificatore: ${ver}
+Unità organizzative: ${unita}
+
+═══ RIEPILOGO ESITI (${compiled}/${totalQ} quesiti compilati) ═══
+Conformi: ${c}
+Non Conformi: ${nc}
+Conformità Parziali: ${p}
+Non Applicabili: ${na}
+Non Verificati: ${nv}
+
+═══ NON CONFORMITÀ (${nc}) ═══
+${listNC}
+═══ CONFORMITÀ PARZIALI (${p}) ═══
+${listP}
+═══ NON VERIFICATI (${nv}) ═══
+${listNV}
+═══ ISTRUZIONI PER LA RELAZIONE ═══
+Redigi una relazione tecnica discorsiva completa, strutturata nelle seguenti sezioni:
+
+1. Premessa e obiettivo del sopralluogo
+2. Descrizione del sito e contesto organizzativo
+3. Esito generale dell'audit (commenta i numeri complessivi, il tasso di conformità e il livello di rischio complessivo)
+4. Analisi delle non conformità e delle conformità parziali per area tematica (raggruppa per area commenta ciascuna con riferimento alla norma applicabile, alla priorità e ai CdR responsabili)
+5. Aspetti positivi riscontrati
+6. Conclusioni e raccomandazioni (indica le priorità di intervento, i CdR coinvolti, le azioni correttive suggerite e le tempistiche indicative)
+
+ Usa un tono professionale e tecnico-legale. La relazione deve essere autonoma e adatta ad essere allegata al fascicolo del sopralluogo.`;
+
+  showModalInfo("✨ Prompt Generated", promptText, true);
+}
+
+// --- SALVATAGGIO LOCALE ED ARCHIVIO ---
+function saveLocal() {
+  const codice = document.getElementById('f-codice').value.trim() || 'Senza Codice';
+  const data = document.getElementById('f-data').value || new Date().toISOString().split('T')[0];
+  const verificatore = document.getElementById('f-verificatore').value.trim();
+  const unita = document.getElementById('f-unita').value.trim();
+  
+  const rows = QUESTIONS.map(q => {
+    const s = state[q.id] || {};
+    const ev = (document.getElementById('ev-'+q.id)||{}).value || '';
+    const tr = (document.getElementById('tr-'+q.id)||{}).value || '';
+    return {
+      id: q.id,
+      esito: s.esito || '',
+      priorita: s.prio || '',
+      cdrs: s.cdrs ? [...s.cdrs] : [],
+      evidenza: ev.trim(),
+      trattamento: tr.trim(),
+      photos: s.photos || []
+    };
+  });
+  
+  const auditData = { 
+    id: Date.now().toString(),
+    codiceStabile: codice, 
+    dataSopralluogo: data, 
+    verificatore: verificatore, 
+    unitaOrganizzative: unita, 
+    globalPhotos: state.globalPhotos || [],
+    compilazione: rows 
+  };
+
+  let archives = JSON.parse(localStorage.getItem('tech_audits') || '[]');
+  archives.push(auditData);
+  try {
+    localStorage.setItem('tech_audits', JSON.stringify(archives));
+    alert("Audit salvato correttamente nell'archivio locale del browser!");
+  } catch (e) {
+    alert("Errore nel salvataggio locale: lo spazio di archiviazione potrebbe essere pieno a causa del peso delle foto. Prova ad esportare direttamente in file JSON.");
+  }
+}
+
+function openArchive() {
+  let archives = JSON.parse(localStorage.getItem('tech_audits') || '[]');
+  let html = '<p style="margin-bottom:16px;">Qui trovi i salvataggi effettuati localmente sul browser. Puoi ricaricare una sessione precedente o eliminare vecchi file.</p>';
+  
+  if (archives.length === 0) {
+     html += '<strong style="color:var(--text);">Nessun audit presente in archivio.</strong>';
+  } else {
+     html += '<div style="display:flex; flex-direction:column; gap:10px;">';
+     archives.sort((a,b) => parseInt(b.id) - parseInt(a.id)).forEach(a => {
+        const auditDate = new Date(parseInt(a.id)).toLocaleString('it-IT');
+        html += `<div style="background:var(--white); border:1px solid var(--border); padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <strong style="color:var(--navy); font-size:14px;">Codice Stabile: ${a.codiceStabile}</strong><br>
+            <small style="color:var(--text-muted);">Data rilievo: ${a.dataSopralluogo} | Verificatore: ${a.verificatore || 'N/D'}</small><br>
+            <small style="color:var(--text-muted); font-size:10px;">Salvato in locale il: ${auditDate}</small>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-primary" style="padding:6px 12px; font-size:12px;" onclick="loadLocal('${a.id}')">Carica</button>
+            <button class="btn btn-danger" style="padding:6px 12px; font-size:12px;" onclick="deleteLocal('${a.id}')">Elimina</button>
+          </div>
+        </div>`;
+     });
+     html += '</div>';
+  }
+  
+  document.getElementById('modal-title').textContent = '📂 Archivio Locale';
+  const modalText = document.getElementById('modal-text');
+  modalText.innerHTML = html;
+  modalText.style.whiteSpace = 'normal'; 
+  document.getElementById('btn-copy').style.display = 'none';
+  document.getElementById('custom-modal').classList.add('active');
+}
+
+function deleteLocal(id) {
+   if(!confirm("Sei sicuro di voler eliminare definitivamente questo salvataggio dall'archivio locale? L'operazione non è reversibile.")) return;
+   let archives = JSON.parse(localStorage.getItem('tech_audits') || '[]');
+   archives = archives.filter(a => a.id !== id);
+   localStorage.setItem('tech_audits', JSON.stringify(archives));
+   openArchive(); 
+}
+
+function loadLocal(id) {
+  let archives = JSON.parse(localStorage.getItem('tech_audits') || '[]');
+  let data = archives.find(a => a.id === id);
+  if(!data) return;
+
+  if(!confirm("Attenzione: ricaricando questo audit, i dati non salvati attualmente a schermo verranno persi. Vuoi procedere?")) return;
+
+  resetAllSilently();
+
+  document.getElementById('f-codice').value = data.codiceStabile || '';
+  document.getElementById('f-data').value = data.dataSopralluogo || '';
+  document.getElementById('f-verificatore').value = data.verificatore || '';
+  document.getElementById('f-unita').value = data.unitaOrganizzative || '';
+  updateSitoHeader();
+
+  // Ripristino foto generali
+  if (data.globalPhotos && data.globalPhotos.length > 0) {
+    state.globalPhotos = data.globalPhotos;
+    const container = document.getElementById('global-photos-container');
+    document.getElementById('global-photos-section').style.display = 'block';
+    state.globalPhotos.forEach(src => {
+      const thumb = document.createElement('img');
+      thumb.src = src;
+      thumb.className = 'photo-thumb';
+      container.appendChild(thumb);
+    });
+  }
+
+  if (data.compilazione) {
+    data.compilazione.forEach(row => {
+      if (!row.esito) return;
+      
+      const qId = row.id;
+      state[qId] = {
+        esito: row.esito,
+        prio: row.priorita || null,
+        cdrs: new Set(row.cdrs || []),
+        photos: row.photos || []
+      };
+
+      const qRow = document.getElementById('qrow-' + qId);
+      if (qRow) {
+        const cls = {C:'active-conforme',NC:'active-nonconforme',P:'active-parziale',NA:'active-na',NV:'active-nv'}[row.esito];
+        const btnIndex = {C:0, NC:1, P:2, NA:3, NV:4}[row.esito];
+        const btns = qRow.querySelectorAll('.esito-btn');
+        if(btns[btnIndex]) btns[btnIndex].classList.add(cls);
+
+        if (row.priorita) {
+          const prioBtns = qRow.querySelectorAll('.prio-btn');
+          prioBtns.forEach(b => {
+            if (b.textContent.trim() == row.priorita) b.classList.add('active-' + row.priorita);
+          });
+        }
+
+        if (row.cdrs && row.cdrs.length > 0) {
+          const cdrLabels = qRow.querySelectorAll('.cdr-label');
+          cdrLabels.forEach(lbl => {
+            if (row.cdrs.includes(lbl.textContent.trim())) {
+              lbl.classList.add('checked');
+            }
+          });
+        }
+
+        const evTA = document.getElementById('ev-' + qId);
+        if (evTA) evTA.value = row.evidenza || '';
+        
+        const trTA = document.getElementById('tr-' + qId);
+        if (trTA) trTA.value = row.trattamento || '';
+
+        // Rendering anteprime immagini singole riga quesito
+        if (row.photos && row.photos.length > 0) {
+          const pContainer = document.getElementById('photos-container-' + qId);
+          if (pContainer) {
+            row.photos.forEach(src => {
+              const thumb = document.createElement('img');
+              thumb.src = src;
+              thumb.className = 'photo-thumb';
+              pContainer.appendChild(thumb);
+            });
+          }
+        }
+
+        updatePanel(qId);
+        validate(qId);
+      }
+    });
+  }
+
+  updateStats();
+  closeModal();
+  alert("Dati ripristinati correttamente dall'archivio locale!");
+}
+
+// --- ESPORTAZIONI FILE ---
+function exportJSON() {
+  const codice = document.getElementById('f-codice').value.trim();
+  const data = document.getElementById('f-data').value;
+  const verificatore = document.getElementById('f-verificatore').value.trim();
+  const unita = document.getElementById('f-unita').value.trim();
+  
+  const rows = QUESTIONS.map(q => {
+    const s = state[q.id] || {};
+    const ev = (document.getElementById('ev-'+q.id)||{}).value || '';
+    const tr = (document.getElementById('tr-'+q.id)||{}).value || '';
+    return {
+      id: q.id, area: q.area,
+      esito: s.esito || '',
+      priorita: s.prio || '',
+      cdrs: s.cdrs ? [...s.cdrs] : [],
+      evidenza: ev.trim(),
+      trattamento: tr.trim(),
+      photos: s.photos || []
+    };
+  });
+  
+  const output = { 
+    codiceStabile: codice, 
+    dataSopralluogo: data, 
+    verificatore, 
+    unitaOrganizzative: unita, 
+    globalPhotos: state.globalPhotos || [],
+    compilazione: rows 
+  };
+  const json = JSON.stringify(output, null, 2);
+  
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'TechnicalAudit_' + (codice||'SITO') + '_' + (data||'data') + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// --- IMPORTAZIONE FILE JSON ---
+function triggerImportJSON() {
+  document.getElementById('json-import-upload').click();
+}
+
+function importJSON(input) {
+  if (!input.files || input.files.length === 0) return;
+  const file = input.files[0];
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      
+      if (!data || !data.compilazione) {
+        alert("Errore: Il file JSON selezionato non sembra essere un backup valido per questo audit.");
+        return;
+      }
+      
+      if (!confirm("Attenzione: importando questo file JSON, tutti i dati correnti a schermo verranno sovrascritti. Vuoi procedere?")) {
+        input.value = '';
+        return;
+      }
+
+      resetAllSilently();
+
+      document.getElementById('f-codice').value = data.codiceStabile || data.codiceStabile === '' ? data.codiceStabile : (data.id || '');
+      document.getElementById('f-data').value = data.dataSopralluogo || '';
+      document.getElementById('f-verificatore').value = data.verificatore || '';
+      document.getElementById('f-unita').value = data.unitaOrganizzative || '';
+      updateSitoHeader();
+
+      // Ripristino foto generali
+      if (data.globalPhotos && data.globalPhotos.length > 0) {
+        state.globalPhotos = data.globalPhotos;
+        const container = document.getElementById('global-photos-container');
+        document.getElementById('global-photos-section').style.display = 'block';
+        state.globalPhotos.forEach(src => {
+          const thumb = document.createElement('img');
+          thumb.src = src;
+          thumb.className = 'photo-thumb';
+          container.appendChild(thumb);
+        });
+      }
+
+      data.compilazione.forEach(row => {
+        if (!row.esito) return;
+        
+        const qId = row.id;
+        state[qId] = {
+          esito: row.esito,
+          prio: row.priorita || null,
+          cdrs: new Set(row.cdrs || []),
+          photos: row.photos || []
+        };
+
+        const qRow = document.getElementById('qrow-' + qId);
+        if (qRow) {
+          const cls = {C:'active-conforme',NC:'active-nonconforme',P:'active-parziale',NA:'active-na',NV:'active-nv'}[row.esito];
+          const btnIndex = {C:0, NC:1, P:2, NA:3, NV:4}[row.esito];
+          const btns = qRow.querySelectorAll('.esito-btn');
+          if(btns[btnIndex]) btns[btnIndex].classList.add(cls);
+
+          if (row.priorita) {
+            const prioBtns = qRow.querySelectorAll('.prio-btn');
+            prioBtns.forEach(b => {
+              if (b.textContent.trim() == row.priorita) b.classList.add('active-' + row.priorita);
+            });
+          }
+
+          if (row.cdrs && row.cdrs.length > 0) {
+            const cdrLabels = qRow.querySelectorAll('.cdr-label');
+            cdrLabels.forEach(lbl => {
+              if (row.cdrs.includes(lbl.textContent.trim())) {
+                lbl.classList.add('checked');
+              }
+            });
+          }
+
+          const evTA = document.getElementById('ev-' + qId);
+          if (evTA) evTA.value = row.evidenza || '';
+          
+          const trTA = document.getElementById('tr-' + qId);
+          if (trTA) trTA.value = row.trattamento || '';
+
+          // Rendering anteprime immagini singole riga quesito
+          if (row.photos && row.photos.length > 0) {
+            const pContainer = document.getElementById('photos-container-' + qId);
+            if (pContainer) {
+              row.photos.forEach(src => {
+                const thumb = document.createElement('img');
+                thumb.src = src;
+                thumb.className = 'photo-thumb';
+                pContainer.appendChild(thumb);
+              });
+            }
+          }
+
+          updatePanel(qId);
+          validate(qId);
+        }
+      });
+
+      updateStats();
+      alert("Dati importati con successo dal file JSON!");
+    } catch (err) {
+      alert("Errore durante la lettura del file JSON: " + err.message);
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function exportCSV() {
+  const codice = document.getElementById('f-codice').value.trim();
+  const data = document.getElementById('f-data').value;
+  const verificatore = document.getElementById('f-verificatore').value.trim();
+  const header = ['ID','Area','Esito','Priorità','CdR','Evidenza/Note','Trattamento Immediato'];
+  const esitoMap = {C:'CONFORME',NC:'NON CONFORME',P:'CONFORMITÀ PARZIALE',NA:'NON APPLICABILE',NV:'NON VERIFICATO'};
+  
+  const rows = [header, ...QUESTIONS.map(q => {
+    const s = state[q.id] || {};
+    const ev = (document.getElementById('ev-'+q.id)||{}).value || '';
+    const tr = (document.getElementById('tr-'+q.id)||{}).value || '';
+    const cdrs = s.cdrs ? [...s.cdrs].join('; ') : '';
+    return [q.id, q.area, esitoMap[s.esito]||'', s.prio||'', cdrs,
+            ev.replace(/[\r\n]+/g,' ').trim(),
+            tr.replace(/[\r\n]+/g,' ').trim()];
+  })];
+  
+  const csv = '# Codice Stabile: ' + codice + ' | Data: ' + data + ' | Verificatore: ' + verificatore + '\n'
+    + rows.map(r => r.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\n');
+    
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'TechnicalAudit_' + (codice||'SITO') + '_' + (data||'data') + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// INIT
+buildUI();
+updateStats();
+</script>
+</body>
+</html>
